@@ -114,19 +114,23 @@ Follow these steps to get the project running on your local machine.
 
 ## 📸 Screenshots
 
-*(Replace these placeholders with your actual screenshots)*
 
 **1. Main Landing Page**
-![Landing Page](path/to/your/screenshot1.png)
+<img width="1975" height="4300" alt="screencapture-127-0-0-1-8000-2025-10-05-19_54_47" src="https://github.com/user-attachments/assets/9e7a1af9-7345-41a0-b680-032ef5d4291a" />
+
 
 **2. Multi-Step Registration Form**
-![Registration Form](path/to/your/screenshot2.png)
+<img width="675" height="917" alt="image" src="https://github.com/user-attachments/assets/bc7ff127-5451-4461-a317-b59467df14ae" />
+
 
 **3. Personalized Health Dashboard**
-![Personalized Dashboard](path/to/your/screenshot3.png)
+<img width="1919" height="1778" alt="screencapture-127-0-0-1-8000-dashboard-7-2025-10-05-19_55_50" src="https://github.com/user-attachments/assets/3f1e30bc-2024-4712-98df-40becad31158" />
+
 
 **4. Interactive "Health Trajectory" Model**
-![Roshan Demo](path/to/your/screenshot4.png)
+<img width="1024" height="960" alt="image" src="https://github.com/user-attachments/assets/643e73e0-991c-48ba-9026-2c9c971c4482" />
+
 
 **5. User List Dashboard**
-![User List](path/to/your/screenshot5.png)
+<img width="823" height="884" alt="image" src="https://github.com/user-attachments/assets/cbe991d0-b802-4fa8-a7f5-500afce8bea3" />
+
