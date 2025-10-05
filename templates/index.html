@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clonus – Digital Twin of Patient</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+    body { font-family: Arial, sans-serif; margin:0; padding:0; line-height:1.6; background:#f4f6f8; color:#333; scroll-behavior:smooth; }
+    h1, h2, h3 { margin:0 0 10px;}
+    section { padding:100px 20px; max-width:100%; margin:0 auto;}
+    a { text-decoration:none; color:inherit; }
+
+    /* Navbar */
+    nav {
+      position:sticky;
+      top:0;
+      background:#007BFF;
+      padding:10px 20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      z-index:100;
+    }
+    nav .logo { display:flex; align-items:center; color:#fff; font-size:1.3em; font-weight:bold;}
+    nav .logo i { margin-right:8px; font-size:1.5em; color:#fff;}
+    
+    /* Menu */
+    nav .nav-links {
+      display:flex;
+      align-items:center;
+      gap:15px;
+    }
+    nav .nav-links a {
+      color:#fff;
+      font-weight:bold;
+      display:inline-flex;
+      align-items:center;
+      text-decoration: none;
+    }
+    nav .nav-links a i { margin-right:6px;}
+    nav .nav-links a:hover { text-decoration:none;}
+
+    /* Hamburger - Mobile */
+    .hamburger {
+      display:none;
+      flex-direction:column;
+      cursor:pointer;
+    }
+    .hamburger div {
+      width:25px;
+      height:3px;
+      background:#fff;
+      margin:4px 0;
+      transition: 0.4s;
+    }
+
+    /* Hero */
+    #hero { 
+      color:#fff; 
+      text-align:center; 
+      height:70vh;
+      background-size:cover; 
+      background-position:center; 
+      background-repeat:no-repeat; 
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      transition: background-image 1s ease-in-out; 
+    }
+    #hero h1 { font-size:3em; margin-bottom:20px; text-shadow:2px 2px 5px rgba(0,0,0,0.5);}
+    #hero p { font-size:1.2em; margin-bottom:30px; text-shadow:1px 1px 3px rgba(0,0,0,0.5); }
+
+    /* Features */
+    #features { background:#fff; text-align:center; }
+    .feature { display:inline-block; width:250px; margin:20px; padding:20px; background:#e7f0ff; border-radius:10px; transition:transform 0.3s;}
+    .feature:hover { transform: translateY(-10px);}
+    .feature i { font-size:40px; color:#007BFF; margin-bottom:10px;}
+
+    /* Steps */
+    #steps { background:#f9f9f9; text-align:center; }
+    .step-container { display:flex; justify-content:space-around; flex-wrap:wrap; }
+    .step { background:#fff; border-radius:10px; width:220px; margin:20px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.2); transition:transform 0.3s;}
+    .step:hover { transform: translateY(-10px);}
+    .step i { font-size:36px; color:#007BFF; margin-bottom:10px;}
+    .step h4 { margin:10px 0; }
+
+    /* Benefits */
+    #benefits { 
+      background:linear-gradient(135deg,#eaf6ff,#f5fdfc); 
+      text-align:center; 
+      color:#333;
+      padding:80px 20px;
+    }
+    #benefits h2 { color:#007BFF; margin-bottom:30px; }
+    .benefit { display:inline-block; width:250px; margin:20px; padding:20px; background:#fff; border:2px solid #007BFF; border-radius:10px; transition: transform 0.3s; color:#333; box-shadow:0 4px 10px rgba(0,0,0,0.05);}
+    .benefit:hover { transform: translateY(-10px);}
+    .benefit i { font-size:40px; color:#007BFF; margin-bottom:10px;}
+
+    /* Team */
+    #team { background:#f9f9f9; text-align:center; }
+    .card-container { display:flex; justify-content:space-around; flex-wrap:wrap; }
+    .card { background:#fff; border-radius:10px; width:220px; margin:20px; padding:15px; box-shadow:0 2px 8px rgba(0,0,0,0.2); transition:transform 0.3s;}
+    .card:hover { transform: translateY(-10px);}
+    .card img { width:100%; border-radius:50%; margin-bottom:10px;}
+    .card h4 { margin:5px 0; }
+    .card p { margin:2px 0; color:#555; }
+
+    footer { text-align:center; padding:20px; background:#007BFF; color:#fff; }
+
+    /* Responsive */
+    @media(max-width:768px){
+      nav .nav-links {
+        display:none;
+        position:absolute;
+        top:60px;
+        right:0;
+        background:#007BFF;
+        flex-direction:column;
+        width:200px;
+        border-radius:0 0 5px 5px;
+        overflow:hidden;
+      }
+      nav .nav-links a { padding:12px 15px; }
+      .hamburger { display:flex; }
+      nav .nav-links.active { display:flex; }
+    }
+
+    /* Container for the logo and text */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  /* --- Fancy Text Styling --- */
+  font-family: 'Poppins', sans-serif; /* A clean, modern font */
+  font-size: 28px;
+  font-weight: 600;
+
+  /* 1. Define the gradient as the background */
+  background-image: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+  
+  /* 2. Clip the background to the shape of the text */
+  -webkit-background-clip: text; /* For Safari/Chrome compatibility */
+  background-clip: text;
+  
+  /* 3. Make the actual text color transparent to reveal the gradient */
+  color: transparent;
+}
+
+/* Style for the logo image itself */
+.logo img {
+  height: 45px;
+  width: auto;
+}
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+  <div class="logo">
+    <img src="{% static 'images/logo.png' %}" alt="logo"/>Clonus
+  </div>
+  <div class="hamburger" id="hamburger">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <div class="nav-links" id="nav-links">
+    <a href="#hero"><i class="fas fa-house"></i>Home</a>
+    <a href="#features"><i class="fas fa-star"></i>Features</a>
+    <a href="#steps"><i class="fas fa-diagram-project"></i>Steps</a>
+    <a href="{% url 'app_home' %}" style="background-color: #ffc107; color: #333; padding: 8px 15px; border-radius: 5px;"><i class="fas fa-play-circle"></i> Try Model</a>
+    <a href="#benefits"><i class="fas fa-heartbeat"></i>Benefits</a>
+    <a href="#team"><i class="fas fa-users"></i>Team</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <h1>Clonus – Your Personal Health Twin</h1>
+  <p>Track daily health, visualize risks, and simulate improvements in real-time.</p>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <h2>Why Clonus?</h2>
+  <div class="feature">
+    <i class="fas fa-notes-medical"></i>
+    <h3>Daily Health Logging</h3>
+    <p>Enter vitals, symptoms, and lifestyle easily every day.</p>
+  </div>
+  <div class="feature">
+    <i class="fas fa-chart-line"></i>
+    <h3>Real-Time Risk Dashboard</h3>
+    <p>Instant feedback on health trends and alerts.</p>
+  </div>
+  <div class="feature">
+    <i class="fas fa-vials"></i>
+    <h3>What-If Simulation</h3>
+    <p>See how small changes improve your health score.</p>
+  </div>
+</section>
+
+<!-- Steps -->
+<section id="steps">
+  <h2>Steps to Use – How Clonus Works?</h2>
+  <div class="step-container">
+    <div class="step"><i class="fas fa-user-plus"></i><h4>1. Login / Register</h4><p>Patients and doctors create secure accounts and profiles.</p></div>
+    <div class="step"><i class="fas fa-keyboard"></i><h4>2. Add Symptoms / Vitals</h4><p>Patients log daily updates manually or via APIs.</p></div>
+    <div class="step"><i class="fas fa-robot"></i><h4>3. Digital Twin Updates</h4><p>Your health twin evolves dynamically with new inputs.</p></div>
+    <div class="step"><i class="fas fa-chart-area"></i><h4>4. Visualization & Alerts</h4><p>Interactive graphs & risk warnings keep you informed.</p></div>
+    <div class="step"><i class="fas fa-user-md"></i><h4>5. Doctor Access</h4><p>Doctors review twins, simulate outcomes, and prescribe.</p></div>
+    <div class="step"><i class="fas fa-sync-alt"></i><h4>6. Continuous Updates</h4><p>Your twin grows smarter with every health update.</p></div>
+  </div>
+</section>
+
+<!-- Benefits -->
+<section id="benefits">
+  <h2>Empowering Patients & Doctors</h2>
+  <div class="benefit">
+    <i class="fas fa-eye"></i>
+    <h3>Monitor Daily Health</h3>
+  </div>
+  <div class="benefit">
+    <i class="fas fa-balance-scale"></i>
+    <h3>Make Lifestyle Decisions</h3>
+  </div>
+  <div class="benefit">
+    <i class="fas fa-stethoscope"></i>
+    <h3>Doctors Get Quick Insights</h3>
+  </div>
+</section>
+
+<!-- Team -->
+<section id="team">
+  <h2>Meet Team Clonus</h2>
+  <div class="card-container">
+    <div class="card"><img src="{% static 'images/roshan.png' %}" alt="Member 1"><h4>Roshan Patil</h4><p>Phone: 1234567890</p><p>Email: member1@example.com</p></div>
+    <div class="card"><img src="{% static 'images/neha.jpg' %}" alt="Member 2"><h4>Neha Chandele</h4><p>Phone: 2345678901</p><p>Email: member2@example.com</p></div>
+    <div class="card"><img src="{% static 'images/shreya.png' %}" alt="Member 3"><h4>Shreya Nikam</h4><p>Phone: 3456789012</p><p>Email: member3@example.com</p></div>
+    <div class="card"><img src="{% static 'images/bhagyashree.jpg' %}" alt="Member 4"><h4>Bhagyashree Mistari</h4><p>Phone: 4567890123</p><p>Email: member4@example.com</p></div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+   @Team Clonus.
+</footer>
+
+<script>
+  // Hero slideshow
+  const heroImages = [
+    "{% static 'images/hero1.jpg' %}",
+    "{% static 'images/hero2.jpg' %}",
+    "{% static 'images/hero3.jpg' %}"
+  ];
+  let heroIndex=0;
+  const heroSection=document.getElementById('hero');
+  function changeHeroImage(){
+    heroSection.style.backgroundImage=`url(${heroImages[heroIndex]})`;
+    heroIndex=(heroIndex+1)%heroImages.length;
+  }
+  changeHeroImage();
+  setInterval(changeHeroImage,5000);
+
+  // Hamburger toggle
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+  });
+</script>
+
+</body>
+</html>

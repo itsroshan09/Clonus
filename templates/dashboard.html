@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Digital Twin Analysis</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Global Styles */
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        /* Chart Card */
+        .chart-container {
+            position: relative;
+            height: 250px;
+            margin: 0 auto;
+        }
+
+        .score-text {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .score-text span {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #7f8c8d;
+        }
+
+        /* Impact Factors */
+        .factors-list li {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .factors-list li:last-child {
+            border-bottom: none;
+        }
+
+        .factor-icon {
+            font-size: 1.2rem;
+            margin-right: 15px;
+            padding: 8px;
+            border-radius: 50%;
+            color: white;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 24px;
+        }
+
+        .severity-critical { background-color: #d32f2f; }
+        .severity-high { background-color: #e65100; }
+        .severity-medium { background-color: #f57c00; }
+        .severity-low { background-color: #27ae60; }
+
+        /* Right Column */
+        .right-column { display: flex; flex-direction: column; gap: 30px; }
+
+        /* Buttons */
+        .btn-edit {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-edit i { font-size: 1rem; }
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #2980b9, #2471a3);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-email {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        .btn-email:hover {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+
+        /* Recommendation */
+        .recommendation { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 25px; }
+        .rec-icon { font-size: 1.8rem; color: #3498db; margin-top: 5px; }
+        .rec-content h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; }
+        .rec-content p { font-size: 0.95rem; color: #7f8c8d; line-height: 1.6; }
+
+        /* Doctor Recommendation Card */
+        .doctor-card {
+            background: #fffbf2;
+            border-left: 6px solid #f39c12;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .doctor-card i {
+            font-size: 2rem;
+            color: #f39c12;
+        }
+        .doctor-card-content h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .doctor-card-content p {
+            margin: 0;
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-grid">
+        <div class="left-column">
+            <div class="card">
+                <h2>Clonus™ Health Analysis</h2>
+                <div class="chart-container">
+                    <canvas id="healthScoreChart"></canvas>
+                    <div class="score-text">{{ health_score }}<span>/100</span></div>
+                </div>
+                <p style="text-align:center; color:#7f8c8d; margin-top:20px;">
+                    This score represents a snapshot of your current health based on the data provided.
+                </p>
+            </div>
+            <div class="card">
+                <h2>Primary Impact Factors</h2>
+                <ul class="factors-list">
+                    {% for reason in reasons %}
+                    <li>
+                        <span class="factor-icon severity-{{ reason.severity }}">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </span>
+                        <span>{{ reason.text }}</span>
+                    </li>
+                    {% empty %}
+                    <li>
+                        <span class="factor-icon" style="background-color: #2ecc71;">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <span>No significant negative health factors.</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="card">
+                <h2>AI-Generated Summary</h2>
+                <a href="{% url 'update_user' profile.id %}" class="btn-edit">
+                    <i class="fa-solid fa-pencil"></i> Edit Details
+                </a>
+                <a href="{% url 'send_email' profile.email %}" class="btn-edit btn-email">
+                    <i class="fa-solid fa-bell"></i> Notify by Email
+                </a>
+                <p style="line-height:1.7; color:#7f8c8d; margin-top:15px;">
+                    Hello <strong>{{ profile.full_name }}</strong>, your current health score is 
+                    <strong>{{ health_score }}/100</strong>. This score is influenced by your lifestyle and health metrics.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2>Your Personalized Action Plan</h2>
+                {% for tip in recommendations %}
+                <div class="recommendation">
+                    <i class="{{ tip.icon }} rec-icon"></i>
+                    <div class="rec-content">
+                        <h3>{{ tip.title }}</h3>
+                        <p>{{ tip.details }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Doctor Recommendations -->
+           <div class="card">
+    <h2>Doctor's Recommendations</h2>
+    {% for doctor_tip in doctor_recommendations %}
+    <div class="doctor-card">
+        <i class="fa-solid fa-stethoscope"></i>
+        <div class="doctor-card-content">
+            <h3>{{ doctor_tip.title }}</h3>
+            <p>{{ doctor_tip.details }}</p>
+        </div>
+    </div>
+    {% empty %}
+    <p style="color:#7f8c8d;">No specific doctor recommendations at this time.</p>
+    {% endfor %}
+</div>
+
+        </div>
+    </div>
+
+    <script>
+        const score = {{ health_score }};
+        const scoreColor = score >= 80 ? '#2ecc71' : score >= 50 ? '#f1c40f' : '#e74c3c';
+
+        const data = {
+            datasets: [{
+                data: [score, 100 - score],
+                backgroundColor: [scoreColor, '#e9ecef'],
+                borderColor: ['#ffffff', '#ffffff'],
+                borderWidth: 2,
+                cutout: '80%'
+            }]
+        };
+
+        const config = {
+            type: 'doughnut',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: false
+                }
+            }
+        };
+
+        new Chart(document.getElementById('healthScoreChart'), config);
+    </script>
+</body>
+</html>

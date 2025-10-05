@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Report</title>
+<style>
+  body {
+    margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f5f7fa;
+  }
+
+  .wrapper {
+    width: 100%; table-layout: fixed; background-color: #f5f7fa; padding: 20px 0;
+  }
+
+  .main {
+    background-color: #ffffff; margin: 0 auto; border-radius: 16px; max-width: 600px; padding: 25px; 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  }
+
+  h2 {
+    font-size: 26px; color: #2c3e50; margin-bottom: 10px;
+  }
+
+  .badge {
+    background-color: #27ae60; color: #fff; font-size: 12px; padding: 3px 8px; border-radius: 12px;
+    margin-left: 8px;
+  }
+
+  p {
+    color: #34495e; font-size: 15px; line-height: 1.6; margin-bottom: 20px;
+  }
+
+  .health-bar-container {
+    background-color: #e0e0e0; border-radius: 50px; overflow: hidden; height: 30px; margin: 20px 0;
+  }
+
+  .health-bar {
+    height: 30px; background: linear-gradient(90deg, #27ae60, #2ecc71); color: #fff;
+    font-weight: bold; line-height: 30px; text-align: center; border-radius: 50px;
+  }
+
+  h3 {
+    font-size: 18px; color: #34495e; margin-bottom: 12px; margin-top: 25px;
+  }
+
+  .card {
+    background-color: #f9f9f9; border-radius: 14px; padding: 12px 15px; margin-bottom: 12px;
+    display: flex; align-items: center; box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+  }
+
+  .card i {
+    font-size: 18px; margin-right: 12px; flex-shrink: 0;
+  }
+
+  .severity-critical { border-left: 5px solid #d32f2f; }
+  .severity-high { border-left: 5px solid #e65100; }
+  .severity-medium { border-left: 5px solid #f57c00; }
+  .severity-low { border-left: 5px solid #27ae60; }
+
+  .rec-card { border-left: 5px solid #3498db; background: #f0f9ff; color: #1c658c; }
+
+  @media screen and (max-width: 600px) {
+    .main { padding: 20px; }
+    h2 { font-size: 22px; }
+    .health-bar-container { height: 25px; }
+    .health-bar { line-height: 25px; font-size: 14px; }
+    .card { padding: 10px 12px; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<table class="wrapper" width="100%" cellspacing="0" cellpadding="0">
+<tr>
+<td>
+  <table class="main" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <h2>
+          Hello {{ profile.full_name }} 
+          <span class="badge">Player</span>
+        </h2>
+        <p>Here’s your current health analysis :</p>
+
+        <!-- Health Score -->
+        <div class="health-bar-container">
+          <div class="health-bar">{{ health_score }}/100</div>
+        </div>
+
+        <!-- Primary Impact Factors -->
+        <h3>Primary Impact Factors</h3>
+        {% if reasons %}
+          {% for reason in reasons %}
+          <div class="card severity-{{ reason.severity }}">
+            <i>&#9888;</i> {{ reason.text }}
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="card severity-low">
+            <i>&#10004;</i> Excellent! No significant negative health factors.
+          </div>
+        {% endif %}
+
+        <!-- Recommendations -->
+        <h3>Action Plan Recommendations</h3>
+        {% for tip in recommendations %}
+        <div class="card rec-card">
+          <i>&#128161;</i> <strong>{{ tip.title }}:</strong> {{ tip.details }}
+        </div>
+        {% endfor %}
+
+        <p style="margin-top:25px;">Best Regards,<br>Clonus™ AI Health System</p>
+      </td>
+    </tr>
+  </table>
+</td>
+</tr>
+</table>
+</body>
+</html>

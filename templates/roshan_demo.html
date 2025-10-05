@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Trajectory for Roshan</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* CSS for the component */
+        :root {
+            --primary-color: #4A90E2;
+            --bg-color: #f0f2f5;
+            --card-bg-color: #ffffff;
+            --text-color: #333;
+            --label-color: #555;
+            --border-color: #e5e7eb;
+            --status-green: #10b981;
+            --status-yellow: #f59e0b;
+            --status-red: #ef4444;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg-color);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.07);
+            padding: 30px 40px;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: var(--label-color);
+            margin-top: 5px;
+        }
+
+        .trajectory-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .image-display img {
+            width: 100%;
+            border-radius: 12px;
+            transition: opacity 0.4s ease-in-out;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .stats-panel h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .stat-item .icon {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            width: 30px;
+            text-align: center;
+            margin-right: 15px;
+        }
+        
+        .stat-item .value {
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+        
+        .value.healthy { background-color: #e7f7f1; color: #0d8a55; }
+        .value.overweight { background-color: #fffbe6; color: #b45309; }
+        .value.obese { background-color: #feefee; color: #c82424; }
+
+        .timeline-slider {
+            margin-top: 30px;
+        }
+        
+        .timeline-slider input[type=range] {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .timeline-slider input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        .timeline-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--label-color);
+        }
+
+        .cta-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .cta-section h4 {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .cta-section p {
+            font-size: 0.95rem;
+            color: var(--label-color);
+            margin: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .trajectory-grid {
+                grid-template-columns: 1fr;
+            }
+            .main-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="header">
+            <h1>Health Trajectory for Roshan</h1>
+            <p>A 10-month projection based on current habits.</p>
+        </div>
+
+        <div class="trajectory-grid">
+            <div class="image-display">
+                <img id="twinImage" src="{% static 'images/roshan_month_0.jpg' %}" alt="Digital Twin Projection">
+            </div>
+            
+            <div class="stats-panel">
+                <h3>Key Indicators for <span id="monthLabel">Month 1</span></h3>
+
+                <div class="stat-item">
+                    <i class="icon fa-solid fa-weight-scale"></i>
+                    <strong>BMI:</strong>
+                    <span class="value healthy" id="bmiValue">24.5</span>
+                </div>
+
+                <div class="stat-item">
+                    <i class="icon fa-solid fa-face-smile"></i>
+                    <strong>Skin Health:</strong>
+                    <span id="skinValue">Vibrant</span>
+                </div>
+
+                <div class="stat-item">
+                    <i class="icon fa-solid fa-battery-full"></i>
+                    <strong>Energy Level:</strong>
+                    <span id="energyValue">High</span>
+                </div>
+
+                <div class="stat-item">
+                    <i class="icon fa-solid fa-triangle-exclamation"></i>
+                    <strong>Health Alert:</strong>
+                    <span id="alertValue">None</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-slider">
+            <input type="range" id="timelineSlider" min="0" max="9" value="0" step="1">
+            <div class="timeline-labels">
+                <span>Month 1</span>
+                <span>Month 10</span>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h4>This is a Projection, Not a Prediction</h4>
+            <p>Small, consistent changes to diet and activity can alter this trajectory.</p>
+        </div>
+    </div>
+
+    <script>
+        // --- Static Demo Data for Roshan ---
+        const trajectoryData = [
+            // Month 1 (Index 0)
+            {
+                month: 1,
+                imageUrl: "{% static 'images/roshan_month_1.jpg' %}",
+                bmi: 24.5, bmiCategory: "healthy",
+                skin: "Vibrant",
+                energy: "High",
+                alert: "None"
+            },
+            // Month 2 (Index 1)
+            {
+                month: 2,
+                imageUrl: "{% static 'images/roshan_month_2.jpg' %}",
+                bmi: 25.1, bmiCategory: "overweight",
+                skin: "Slightly Dull",
+                energy: "Good",
+                alert: "Crossed into 'Overweight' BMI category."
+            },
+            // Month 3 (Index 2)
+            {
+                month: 3,
+                imageUrl: "{% static 'images/roshan_month_3.jpg' %}",
+                bmi: 25.6, bmiCategory: "overweight",
+                skin: "Dull",
+                energy: "Normal",
+                alert: "Noticeable drop in insulin sensitivity."
+            },
+            // Month 4 (Index 3)
+            {
+                month: 4,
+                imageUrl: "{% static 'images/roshan_month_4.jpg' %}",
+                bmi: 26.2, bmiCategory: "overweight",
+                skin: "Dehydrated Appearance",
+                energy: "Slightly Low",
+                alert: "Blood sugar spikes are more frequent."
+            },
+            // Month 5 (Index 4)
+            {
+                month: 5,
+                imageUrl: "{% static 'images/roshan_month_5.jpg' %}",
+                bmi: 26.9, bmiCategory: "overweight",
+                skin: "Noticeable Puffiness",
+                energy: "Low",
+                alert: "Inflammation levels are rising."
+            },
+            // Month 6 (Index 5)
+            {
+                month: 6,
+                imageUrl: "{% static 'images/roshan_month_6.jpg' %}",
+                bmi: 27.5, bmiCategory: "overweight",
+                skin: "Fatigued Look",
+                energy: "Fatigued",
+                alert: "Sleep quality is being affected."
+            },
+            // Month 7 (Index 6)
+            {
+                month: 7,
+                imageUrl: "{% static 'images/roshan_month_7.jpg' %}",
+                bmi: 28.2, bmiCategory: "overweight",
+                skin: "Dark patches may appear",
+                energy: "Exhausted",
+                alert: "High risk for metabolic issues."
+            },
+            // Month 8 (Index 7)
+            {
+                month: 8,
+                imageUrl: "{% static 'images/roshan_month_8.jpg' %}",
+                bmi: 29.0, bmiCategory: "overweight",
+                skin: "Very Dry",
+                energy: "Chronic Fatigue",
+                alert: "Significant strain on cardiovascular system."
+            },
+            // Month 9 (Index 8)
+            {
+                month: 9,
+                imageUrl: "{% static 'images/roshan_month_9.jpg' %}",
+                bmi: 29.7, bmiCategory: "overweight",
+                skin: "Strained Appearance",
+                energy: "Severely Depleted",
+                alert: "High cholesterol impacting arteries."
+            },
+            // Month 10 (Index 9)
+            {
+                month: 10,
+                imageUrl: "{% static 'images/roshan_month_10.jpg' %}",
+                bmi: 30.3, bmiCategory: "obese",
+                skin: "High-Risk Indicators",
+                energy: "Very Low",
+                alert: "Crossed into 'Obese' BMI category. Urgent change needed."
+            }
+        ];
+
+        // --- JavaScript Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.getElementById('timelineSlider');
+            const twinImage = document.getElementById('twinImage');
+            const monthLabel = document.getElementById('monthLabel');
+            const bmiValue = document.getElementById('bmiValue');
+            const skinValue = document.getElementById('skinValue');
+            const energyValue = document.getElementById('energyValue');
+            const alertValue = document.getElementById('alertValue');
+
+            function updateUI(monthIndex) {
+                const data = trajectoryData[monthIndex];
+
+                // Fade out, change content, fade in
+                twinImage.style.opacity = 0;
+                setTimeout(() => {
+                    twinImage.src = data.imageUrl;
+                    twinImage.style.opacity = 1;
+                }, 300);
+
+                // Update text content
+                monthLabel.textContent = `Month ${data.month}`;
+                bmiValue.textContent = data.bmi;
+                skinValue.textContent = data.skin;
+                energyValue.textContent = data.energy;
+                alertValue.textContent = data.alert;
+                
+                // Update BMI color
+                bmiValue.className = 'value'; // Reset classes
+                bmiValue.classList.add(data.bmiCategory);
+            }
+
+            // Initial UI setup
+            updateUI(0);
+
+            // Add event listener to the slider
+            slider.addEventListener('input', (event) => {
+                const monthIndex = parseInt(event.target.value, 10);
+                updateUI(monthIndex);
+            });
+        });
+    </script>
+
+</body>
+</html>

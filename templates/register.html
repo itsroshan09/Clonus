@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if profile %}Update Profile{% else %}Create Digital Twin{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="form-container">
+        <header>
+            <h1>{% if profile %}Update Details for {{ profile.full_name }}{% else %}Clonus Digital Twin{% endif %}</h1>
+            <p>{% if profile %}Make your changes below and click "Save Changes".{% else %}Let's create your health
+                profile to predict your future well-being.{% endif %}</p>
+        </header>
+
+        <div class="progress-bar">
+            <div class="progress-step" data-title="Personal"></div>
+            <div class="progress-step" data-title="Vitals"></div>
+            <div class="progress-step" data-title="Lifestyle"></div>
+            <div class="progress-step" data-title="Medical"></div>
+            <div class="progress-step" data-title="Mental"></div>
+        </div>
+
+        <form id="digitalTwinForm" method="POST"
+            action="{% if profile %}{% url 'update_user' profile.id %}{% else %}{% url 'register_user' %}{% endif %}">
+            {% csrf_token %}
+
+            <div class="form-card active" data-step="1">
+                <h2>🧍‍♂️ Personal Information</h2>
+                <div class="input-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" placeholder="e.g., Ada Lovelace"
+                        value="{{ profile.full_name|default:'' }}" required>
+                </div>
+                <!-- ✅ New Email Field -->
+               <!-- ✅ New Email Field -->
+<div class="input-group">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" placeholder="e.g., ada@example.com"
+        value="{{ profile.email|default:'' }}" required>
+</div>
+
+                <div class="input-group-row">
+                    <div class="input-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" placeholder="Years"
+                            value="{{ profile.age|default:'' }}" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="sex">Sex</label>
+                        <select id="sex" name="sex" required>
+                            <option value="" disabled {% if not profile.sex %}selected{% endif %}>Select...</option>
+                          <option value="male" {% if profile.sex == 'male' %}selected{% endif %}>Male</option>
+<option value="female" {% if profile.sex == 'female' %}selected{% endif %}>Female</option>
+<option value="other" {% if profile.sex == 'other' %}selected{% endif %}>Other</option>
+
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group-row">
+                    <div class="input-group">
+                        <label for="height_cm">Height (cm)</label>
+                        <input type="number" step="0.1" id="height_cm" name="height_cm" placeholder="e.g., 170"
+                            value="{{ profile.height_cm|default:'' }}" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="weight_kg">Weight (kg)</label>
+                        <input type="number" step="0.1" id="weight_kg" name="weight_kg" placeholder="e.g., 65"
+                            value="{{ profile.weight_kg|default:'' }}" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="waist_cm">Waist Circumference (cm) <small>(Optional)</small></label>
+                    <input type="number" step="0.1" id="waist_cm" name="waist_cm" placeholder="Measure at your navel"
+                        value="{{ profile.waist_cm|default:'' }}">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-next">Next →</button>
+                </div>
+            </div>
+
+            <div class="form-card" data-step="2">
+                <h2>🩺 Vitals & Physical Activity</h2>
+                <div class="input-group-row">
+                    <div class="input-group">
+                        <label for="steps_last_24h">Steps (last 24h)</label>
+                        <input type="number" id="steps_last_24h" name="steps_last_24h" placeholder="e.g., 8000"
+                            value="{{ profile.steps_last_24h|default:'' }}" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="activity_minutes">Active Minutes</label>
+                        <input type="number" id="activity_minutes" name="activity_minutes"
+                            placeholder="Moderate/Vigorous" value="{{ profile.activity_minutes|default:'' }}" required>
+                    </div>
+                </div>
+                <div class="input-group-row">
+                    <div class="input-group">
+                        <label for="sleep_hours_last_24h">Sleep (hours)</label>
+                        <input type="number" step="0.1" id="sleep_hours_last_24h" name="sleep_hours_last_24h"
+                            placeholder="e.g., 7.5" value="{{ profile.sleep_hours_last_24h|default:'' }}" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="water_intake_liters">Water Intake (Liters)</label>
+                        <input type="number" step="0.1" id="water_intake_liters" name="water_intake_liters"
+                            placeholder="e.g., 2.5" value="{{ profile.water_intake_liters|default:'' }}" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="calories_intake_last_24h">Calories Intake (kcal) <small>(Optional)</small></label>
+                    <input type="number" id="calories_intake_last_24h" name="calories_intake_last_24h"
+                        placeholder="Best estimate" value="{{ profile.calories_intake_last_24h|default:'' }}">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-back">← Back</button>
+                    <button type="button" class="btn btn-next">Next →</button>
+                </div>
+            </div>
+
+            <div class="form-card" data-step="3">
+                <h2>🍎 Lifestyle & Habits</h2>
+                <div class="input-group">
+                    <label for="diet_quality_score">Diet Quality (0-100)</label>
+                    <input type="range" id="diet_quality_score" name="diet_quality_score" min="0" max="100"
+                        value="{{ profile.diet_quality_score|default:50 }}"
+                        oninput="this.nextElementSibling.value = this.value">
+                    <output>{{ profile.diet_quality_score|default:50 }}</output>
+                    <small>0 = Mostly processed food, 100 = Wholesome & balanced</small>
+                </div>
+                <div class="input-group">
+                    <label for="smoking_status">Smoking Status</label>
+                    <select id="smoking_status" name="smoking_status" required>
+                        <option value="never" {% if profile.smoking_status == 'never' %}selected{% endif %}>Never Smoked
+                        </option>
+                        <option value="former" {% if profile.smoking_status == 'former' %}selected{% endif %}>Former
+                            Smoker</option>
+                        <option value="current" {% if profile.smoking_status == 'current' %}selected{% endif %}>Current
+                            Smoker</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="alcohol_units_week">Alcohol Units / Week <small>(Optional)</small></label>
+                    <input type="number" id="alcohol_units_week" name="alcohol_units_week"
+                        placeholder="Average per week" value="{{ profile.alcohol_units_week|default:'' }}">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-back">← Back</button>
+                    <button type="button" class="btn btn-next">Next →</button>
+                </div>
+            </div>
+
+            <div class="form-card" data-step="4">
+                <h2>💊 Medical Background</h2>
+                <div class="input-group">
+                    <label for="known_conditions">Known Conditions <small>(Optional, comma-separated)</small></label>
+                    <input type="text" id="known_conditions" name="known_conditions"
+                        placeholder="e.g., Diabetes, Hypertension" value="{{ profile.known_conditions|default:'' }}">
+                </div>
+                <div class="input-group">
+                    <label for="medications">Current Medications <small>(Optional, comma-separated)</small></label>
+                    <input type="text" id="medications" name="medications" placeholder="e.g., Metformin, Aspirin"
+                        value="{{ profile.medications|default:'' }}">
+                </div>
+                <div class="input-group conditional" id="menstrual-cycle-group">
+                    <label for="menstrual_cycle_phase">Menstrual Cycle Phase</label>
+                   <select id="menstrual_cycle_phase" name="menstrual_cycle_phase">
+    <option value="" disabled {% if not profile.menstrual_cycle_phase %}selected{% endif %}>Select current phase...</option>
+    <option value="follicular" {% if profile.menstrual_cycle_phase == 'follicular' %}selected{% endif %}>Follicular</option>
+    <option value="ovulation" {% if profile.menstrual_cycle_phase == 'ovulation' %}selected{% endif %}>Ovulation</option>
+    <option value="luteal" {% if profile.menstrual_cycle_phase == 'luteal' %}selected{% endif %}>Luteal</option>
+    <option value="menstruation" {% if profile.menstrual_cycle_phase == 'menstruation' %}selected{% endif %}>Menstruation</option>
+</select>
+
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-back">← Back</button>
+                    <button type="button" class="btn btn-next">Next →</button>
+                </div>
+            </div>
+
+            <div class="form-card" data-step="5">
+                <h2>🧠 Mental & Emotional Health</h2>
+                <div class="input-group">
+                    <label for="mood_score">Current Mood (0-10)</label>
+                    <input type="range" id="mood_score" name="mood_score" min="0" max="10"
+                        value="{{ profile.mood_score|default:7 }}" oninput="this.nextElementSibling.value = this.value"
+                        required>
+                    <output>{{ profile.mood_score|default:7 }}</output>
+                    <small>0 = Very Low, 10 = Excellent</small>
+                </div>
+                <div class="input-group">
+                    <label for="stress_score">Current Stress Level (0-10)</label>
+                    <input type="range" id="stress_score" name="stress_score" min="0" max="10"
+                        value="{{ profile.stress_score|default:3 }}"
+                        oninput="this.nextElementSibling.value = this.value" required>
+                    <output>{{ profile.stress_score|default:3 }}</output>
+                    <small>0 = No Stress, 10 = Extreme Stress</small>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-back">← Back</button>
+                    <button type="submit" class="btn btn-submit">
+                        {% if profile %}Save Changes{% else %}Create Digital Twin{% endif %}
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div id="result" class="result-message"></div>
+    </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+
+</html>
