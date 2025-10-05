@@ -1,4 +1,5 @@
-#<img width="50" height="50" alt="DeWatermark ai_1759673431128 jpeg-removebg-preview" src="https://github.com/user-attachments/assets/aea51449-d02d-43b8-98e2-f19b66f4a4ff" /> Clonus - Your Digital Health Twin
+<img width="50" height="50" alt="DeWatermark ai_1759673431128 jpeg-removebg-preview" src="https://github.com/user-attachments/assets/aea51449-d02d-43b8-98e2-f19b66f4a4ff" />
+# Clonus - Your Digital Health Twin
 
 ### Team Name: TechTogether <img width="50" height="70" alt="logo1-removebg-preview" src="https://github.com/user-attachments/assets/40bd3d19-95cd-4df1-a511-d9629f482d20" />
 
