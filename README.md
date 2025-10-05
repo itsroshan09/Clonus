@@ -1,6 +1,6 @@
 # Clonus - Your Digital Health Twin
 
-### Team Name: TechTogether <img width="365" height="231" alt="logo1-removebg-preview" src="https://github.com/user-attachments/assets/40bd3d19-95cd-4df1-a511-d9629f482d20" />
+### Team Name: TechTogether <img width="200" height="150" alt="logo1-removebg-preview" src="https://github.com/user-attachments/assets/40bd3d19-95cd-4df1-a511-d9629f482d20" />
 
 
 
